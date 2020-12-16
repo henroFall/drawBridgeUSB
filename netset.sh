@@ -1,7 +1,6 @@
 #!/bin/bash
 
 pathusb=/media/usb
-hostn=$("cat /etc/hostname")
 sleep 10
 
 function whereami {
@@ -22,6 +21,10 @@ function IPprefix_by_netmask () {
        let c+=$((x%2)) 'x>>=1'
    done
    echo /$c ;
+}
+
+getHostName() {
+    cat /etc/hostname
 }
 
 function parse_yaml {
@@ -65,7 +68,7 @@ function installCert() {
 ##############
 # Here we go #
 ##############
-
+hostn=$(getHostName)
 if  [ -f "$pathusb/config.yaml" ]
     then
     echo Config file found...
@@ -114,10 +117,10 @@ else
     echo $(date -u) "$hostn: LAST OPERATION - CONFIG FILE NOT FOUND" >>$pathusb/log.txt
 fi
 
-if compgen -G "$pathusb/*.zip" > /dev/null
+if compgen -G "$pathusb/*.pco" > /dev/null
     then
     cd $whereami/Certificates/
-    unzip -o -j $pathusb/*.zip
+    unzip -o -j $pathusb/*.pco
     cp rootCA.cer /usr/local/share/ca-certificates/rootCA.crt
     update-ca-certificates
     cd $whereami
@@ -151,5 +154,5 @@ else
 fi
 echo Unmounting...
 pumount usb
-sleep 1
+sleep 2
 shutdown now
