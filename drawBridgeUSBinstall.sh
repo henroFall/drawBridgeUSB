@@ -89,8 +89,9 @@ def main():
 if __name__ == '__main__':
     main()" >$whereami/watchusb.py
 check_exit_status
-chown +x $whereami/watchusb.py
+chmod +x $whereami/watchusb.py
 check_exit_status
+echo Creating Service file 1/3...
 
 echo "[Unit]
 Description=PERSONA USB Watcher Service
@@ -105,13 +106,13 @@ Restart=no
 [Install]
 WantedBy=multi-user.target" >$whereami/watchusb.service
 check_exit_status
-
+echo Creating Service file 2/3...
 echo "#!/bin/bash
 sleep 300
 sudo systemctl stop watchusb.service " >$whereami/watchwatchusb.sh
 check_exit_status
 chmod +x watchwatchusb.sh
-
+echo Creating Service file 3/3...
 echo "[Unit]
 Description=PERSONA USB Watcher Shutdown Watchdog 
 
@@ -129,8 +130,9 @@ check_exit_status
 
 cd $whereami/Certificates
 
-
-cp etc/netplan/iotgateway.yaml $whereami/iotgateway.yaml.org
+if [ -f "/etc/netplan/iotgateway.yaml" ] ; then
+cp /etc/netplan/iotgateway.yaml $whereami/iotgateway.yaml.org
+fi
 check_exit_status
 cp $whereami/watchusb.service /lib/systemd/system/watchusb.service
 cp $whereami/watchwatchusb.service /lib/systemd/system/watchwatchusb.service
