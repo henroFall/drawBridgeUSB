@@ -46,13 +46,17 @@ function installCert() {
    cp rootCA.cer /usr/local/share/ca-certificates/rootCA.crt
    update-ca-certificates
    cd $whereami
+   rm -f appsettings.json.bak
+   cp appsettings.json appsettings.json.bak
    if [ -z "$old_pw" ]
    then
       sed -i "s/Test1234/$cer_pw/g" appsettings.json
       sed -i "s/TestClient/$cer_pw/g" appsettings.json
+	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
       echo $(date -u) "LAST OPERATION - LOADED FIRST CERT" >>$pathusb/log.txt
    else
       sed -i "s/$old_pw/$cer_pw/g" appsettings.json
+	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
       echo $(date -u) "LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
    fi
 }

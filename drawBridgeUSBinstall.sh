@@ -37,7 +37,7 @@ function whereami {
 echo Installing PCO Drawbridge Gateway USB Monitor...
 apt update
 check_exit_status
-apt install -y ca-certificates unzip python3-pip ipcalc
+apt -y install ca-certificates unzip python3-pip ipcalc
 check_exit_status
 pip3 install pyudev
 check_exit_status
@@ -55,7 +55,7 @@ dpkg -i usbmount_0.0.24_all.deb
 apt --fix-broken install
 check_exit_status
 
-echo "Building app files..."
+echo "Building app file..."
 echo "#!/usr/bin/env python
 
 import functools
@@ -68,10 +68,6 @@ def main():
   timeout = 300   # [seconds]
   timeout_start = time.time()
   while time.time() < timeout_start + timeout:
-
-    if os.path.isfile('$whereami/grue.txt'):
-      os.remove('$whereami/grue.txt')
-      return
     BASE_PATH = os.path.abspath(os.path.dirname(__file__))
     path = functools.partial(os.path.join, BASE_PATH)
     call = lambda x, *args: subprocess.call([path(x)] + list(args))
@@ -83,16 +79,19 @@ def main():
 
     for device in iter(monitor.poll, None):
         call('netset.sh')
-        if os.path.isfile('$whereami/grue.txt'):
-         break
 
 if __name__ == '__main__':
     main()" >$whereami/watchusb.py
 check_exit_status
+echo "#!/bin/bash
+sleep 300
+sudo systemctl stop watchusb.service " >$whereami/watchwatchusb.sh
+check_exit_status
+chmod +x watchwatchusb.sh
+check_exit_status
 chmod +x $whereami/watchusb.py
 check_exit_status
-echo Creating Service file 1/3...
-
+echo Creating Service file 1/2...
 echo "[Unit]
 Description=PERSONA USB Watcher Service
 
@@ -106,13 +105,7 @@ Restart=no
 [Install]
 WantedBy=multi-user.target" >$whereami/watchusb.service
 check_exit_status
-echo Creating Service file 2/3...
-echo "#!/bin/bash
-sleep 300
-sudo systemctl stop watchusb.service " >$whereami/watchwatchusb.sh
-check_exit_status
-chmod +x watchwatchusb.sh
-echo Creating Service file 3/3...
+echo Creating Service file 2/2...
 echo "[Unit]
 Description=PERSONA USB Watcher Shutdown Watchdog 
 
