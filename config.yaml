@@ -1,0 +1,24 @@
+# This is the config file for the 0.1 USBWatcher
+
+# ip_dhcp true or false
+:ip_dhcp: 'false'
+
+# ip_addr your static IP (ignored w/ dhcp true)
+:ip_addr: '192.168.1.110'
+
+# ip_mask your static IP subnet mask (ignored w/ dhcp true)
+:ip_mask: '255.255.255.0'
+
+# ip_gateway your static IP gateway (ignored w/ dhcp true)
+:ip_gateway: '192.168.201.1'
+
+# ip_dns your static IP dns (ignored w/ dhcp true)
+:ip_dns: '1.1.1.1'
+
+# ip_lastgood sure or false
+# (ALWAYS leave this false unless you really messed up)
+# If you think the best thing to do is to copy back the 
+# file I just moved on the last run, set this value to
+# sure . Do not set TRUE, set sure .
+# (ALWAYS leave this false unless you really messed up)
+:ip_lastgood: 'false'
