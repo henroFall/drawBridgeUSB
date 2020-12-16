@@ -126,5 +126,5 @@ else
 fi
 echo Unmounting...
 pumount usb
-sudo systemctl stop watchusb.service 
-#shutdown now
+sleep 1
+shutdown now
