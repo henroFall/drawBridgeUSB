@@ -15,6 +15,13 @@
 # ip_dns your static IP dns (ignored w/ dhcp true)
 :ip_dns: '1.1.1.1'
 
+# cer_pw your password for your certificate
+:cer_pw: 'Abc321'
+
+# old_pw if you need to replace an old password in the config not the default
+# Probably leave alone.
+:old_pw: ''
+
 # ip_lastgood sure or false
 # (ALWAYS leave this false unless you really messed up)
 # If you think the best thing to do is to copy back the 
