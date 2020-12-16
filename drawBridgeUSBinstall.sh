@@ -51,7 +51,7 @@ check_exit_status
 chmod +x netset.sh
 check_exit_status
 dpkg -i usbmount_0.0.24_all.deb
-apt --fix-broken install
+apt -y --fix-broken install
 check_exit_status
 
 echo "Building app file..."
