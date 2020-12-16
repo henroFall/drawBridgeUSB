@@ -139,5 +139,6 @@ systemctl start watchusb.service
 check_exit_status
 systemctl start watchwatchusb.service
 check_exit_status
-echo pausing before reboot
+echo Press the any key to reboot, or CTRL+C to stay in this session.
 read
+shutdown now
