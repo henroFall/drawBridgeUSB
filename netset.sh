@@ -1,6 +1,7 @@
 #!/bin/bash
 
 pathusb=/media/usb
+hostn=$("cat /etc/hostname")
 sleep 10
 
 function whereami {
@@ -57,37 +58,40 @@ function installCert() {
    else
       sed -i "s/$old_pw/$cer_pw/g" appsettings.json
 	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
-      echo $(date -u) "LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
+      echo $(date -u) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
    fi
 }
 
+##############
+# Here we go #
+##############
+
 if  [ -f "$pathusb/config.yaml" ]
     then
-    echo Config found.
+    echo Config file found...
     whereami
-    nic=$(wheresmyvoice)
-    echo $nic
-    echo network
-    if [ -z "$nic" ]
-        then
-        nic="enp2s0" #Guessing. Shouldn't need to hit this part, likely to get wrong nic over no nic.
-    fi
-    eval $(parse_yaml $pathusb/config.yaml)
-    ip_maskc=$(IPprefix_by_netmask $ip_mask)
-    ip_string="$ip_addr$ip_maskc"
-    if [ "$ip_lastgood" = "sure" ]
+	if [ "$ip_lastgood" = "sure" ]
     then
       rm -f /etc/netplan/iotgateway.yaml
       cp $whereami/iotgateway.yaml.last /etc/netplan/iotgateway.yaml
       echo "LAST OPERATION - RESET TO LAST KNOWN GOOD."
-      echo $(date -u) "LAST OPERATION - RESET TO LAST KNOWN GOOD." >$pathusb/log.txt
+      echo $(date -u) "$hostn: LAST OPERATION - RESET TO LAST KNOWN GOOD." >$pathusb/log.txt
       netplan apply
       sleep 2
       shutdown now
     fi
+    nic=$(wheresmyvoice)
+    if [ -z "$nic" ]
+        then
+        nic="enp2s0" #Guessing. Shouldn't need to hit this part, more likely to get the wrong nic above than null
+    fi
+	echo Binding to network adapter $nic
+    eval $(parse_yaml $pathusb/config.yaml)
+    ip_maskc=$(IPprefix_by_netmask $ip_mask)
+    ip_string="$ip_addr$ip_maskc"
     rm -f $whereami/iotgateway.yaml.last
     cp /etc/netplan/iotgateway.yaml $whereami/iotgateway.yaml.last
-
+    echo Building netplan...
     echo "network:
     ethernets:
         $nic:
@@ -99,22 +103,39 @@ if  [ -f "$pathusb/config.yaml" ]
                       addresses: [$ip_dns]
     version: 2" >/etc/netplan/iotgateway.yaml
 
-    echo $(date -u) "LAST OPERATION - LOADED IP_ADDR: $ip_addr" >$pathusb/log.txt
-    echo $(date -u) "LAST OPERATION - LOADED IP_MASK: $ip_mask" >>$pathusb/log.txt
-    echo $(date -u) "LAST OPERATION - WROTE IP_INFO : $ip_string" >>$pathusb/log.txt
-    echo $(date -u) "LAST OPERATION - LOADED IP_GATE: $ip_gateway" >>$pathusb/log.txt
-    echo $(date -u) "LAST OPERATION - LOADED IP_DNS : $ip_dns" >>$pathusb/log.txt
+    echo $(date -u) "$hostn: LAST OPERATION - LOADED IP_ADDR: $ip_addr" >>$pathusb/log.txt
+    echo $(date -u) "$hostn: LAST OPERATION - LOADED IP_MASK: $ip_mask" >>$pathusb/log.txt
+    echo $(date -u) "$hostn: LAST OPERATION - WROTE IP_INFO : $ip_string" >>$pathusb/log.txt
+    echo $(date -u) "$hostn: LAST OPERATION - LOADED IP_GATE: $ip_gateway" >>$pathusb/log.txt
+    echo $(date -u) "$hostn: LAST OPERATION - LOADED IP_DNS : $ip_dns" >>$pathusb/log.txt
     netplan apply
 else
-    echo No Config!
-    echo $(date -u) "LAST OPERATION - CONFIG FILE NOT FOUND" >>$pathusb/log.txt
+    echo No Config file was found on the USB drive!
+    echo $(date -u) "$hostn: LAST OPERATION - CONFIG FILE NOT FOUND" >>$pathusb/log.txt
 fi
 
 if compgen -G "$pathusb/*.zip" > /dev/null
     then
-    installCert
+    cd $whereami/Certificates/
+    unzip -o -j $pathusb/*.zip
+    cp rootCA.cer /usr/local/share/ca-certificates/rootCA.crt
+    update-ca-certificates
+    cd $whereami
+    rm -f appsettings.json.bak
+    cp appsettings.json appsettings.json.bak
+    if [ -z "$old_pw" ]
+    then
+      sed -i "s/Test1234/$cer_pw/g" appsettings.json
+      sed -i "s/TestClient/$cer_pw/g" appsettings.json
+	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
+      echo $(date -u) "$hostn: LAST OPERATION - LOADED FIRST CERT" >>$pathusb/log.txt
+    else
+      sed -i "s/$old_pw/$cer_pw/g" appsettings.json
+	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
+      echo $(date -u) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
+    fi
 else
-    echo $(date -u) "LAST OPERATION - CERT FILE NOT FOUND" >>$pathusb/log.txt
+    echo $(date -u) "$hostn: LAST OPERATION - NO CERT FILES TO PROCESS" >>$pathusb/log.txt
 fi
 
 if  [ -f "$pathusb/pco.patch" ]
@@ -124,9 +145,9 @@ if  [ -f "$pathusb/pco.patch" ]
     systemctl stop IoTGateway.service
     tar -C $whereami -xvf $pathusb/pco.tar.gz
     rm -f $pathusb/pco.tar
-    echo $(date -u) "LAST OPERATION - PATCH APPLIED" >>$pathusb/log.txt
+    echo $(date -u) "$hostn: LAST OPERATION - PATCH APPLIED" >>$pathusb/log.txt
 else
-    echo $(date -u) "LAST OPERATION - NO PATCH AVAILABLE" >>$pathusb/log.txt
+    echo $(date -u) "$hostn: LAST OPERATION - NO PATCH AVAILABLE" >>$pathusb/log.txt
 fi
 echo Unmounting...
 pumount usb
