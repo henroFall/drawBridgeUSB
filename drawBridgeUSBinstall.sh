@@ -1,6 +1,5 @@
 #!/bin/bash
 # usbWatch Installer
-
 check_exit_status() {
     if [ $? -eq 0 ]
     then
