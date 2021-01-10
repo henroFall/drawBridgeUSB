@@ -1,7 +1,8 @@
 #!/bin/bash
 
-pathusb=/media/usb
-demoIP="10.0.242.1"
+
+pathusb=/media/usb # do not change, managed by Linux
+demoIP="10.0.242.1" # this is the LAN IP of the AAAPERIO router for updates to the WAN interface
 
 sleep 10
 
@@ -58,11 +59,11 @@ function installCert() {
    then
       sed -i "s/Test1234/$cer_pw/g" appsettings.json
       sed -i "s/TestClient/$cer_pw/g" appsettings.json
-	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
+      sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
       echo $(date) "LAST OPERATION - LOADED FIRST CERT" >>$pathusb/log.txt
    else
       sed -i "s/$old_pw/$cer_pw/g" appsettings.json
-	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
+      sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
       echo $(date) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
    fi
 }
@@ -78,7 +79,7 @@ if  [ -f "$pathusb/config.yaml" ]
     then
     echo Config file found...
     whereami
-	if [ "$ip_lastgood" = "sure" ]
+    if [ "$ip_lastgood" = "sure" ]
     then
       rm -f /etc/netplan/iotgateway.yaml
       cp $whereami/iotgateway.yaml.last /etc/netplan/iotgateway.yaml
@@ -93,7 +94,7 @@ if  [ -f "$pathusb/config.yaml" ]
         then
         nic="enp2s0" #Guessing. Shouldn't need to hit this part, more likely to get the wrong nic above than null
     fi
-	echo Binding to network adapter $nic
+    echo Binding to network adapter $nic
     eval $(parse_yaml $pathusb/config.yaml)
     ip_maskc=$(IPprefix_by_netmask $ip_mask)
     ip_string="$ip_addr$ip_maskc"
@@ -125,6 +126,7 @@ fi
 # This section goes after the certs
 if compgen -G "$pathusb/*.pco" > /dev/null
     then
+	echo $(date) "$hostn: LAST OPERATION - CERTTIFICATE FILES DETECTED" >>$pathusb/log.txt
     cd $whereami/Certificates/
     unzip -o -j $pathusb/*.pco
     cp rootCA.cer /usr/local/share/ca-certificates/rootCA.crt
@@ -136,11 +138,11 @@ if compgen -G "$pathusb/*.pco" > /dev/null
     then
       sed -i "s/Test1234/$cer_pw/g" appsettings.json
       sed -i "s/TestClient/$cer_pw/g" appsettings.json
-	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
+      sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
       echo $(date) "$hostn: LAST OPERATION - LOADED FIRST CERT" >>$pathusb/log.txt
     else
       sed -i "s/$old_pw/$cer_pw/g" appsettings.json
-	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
+      sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
       echo $(date) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
     fi
 fi
@@ -148,6 +150,7 @@ fi
 # This section does a major patch
 if  [ -f "$pathusb/pco.patch" ]
     then
+	echo $(date) "$hostn: LAST OPERATION - DRAWBRIDGE PATCH DETECTED" >>$pathusb/log.txt
     mv $pathusb/pco.patch $pathusb/pco.tar.gz
     systemctl stop pco-service.service
     systemctl stop IoTGateway.service
@@ -159,41 +162,42 @@ fi
 # This section does an updater patch
 if  [ -f "$pathusb/updater.patch" ]
     then
+	echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH DETECTED" >>$pathusb/log.txt
     systemctl stop watchusb.service
     systemctl stop watchwatchusb.service
-	mkdir $pathusb/updater
+    mkdir $pathusb/updater
     tar -C $pathusb/updater -xvf $pathusb/updater.patch
-	if [ -e $pathusb/updater/watchusb.service ]
-	 then
-	 cp $pathusb/updater/watchusb.service /lib/systemd/system/watchusb.service
-	 echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
-	fi
-	if [ -e $pathusb/updater/watchwatchusb.service ]
-	 then
-	 cp $pathusb/updater/watchwatchusb.service /lib/systemd/system/watchwatchusb.service
-	 echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHWATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
-	fi
-	if [ -e $pathusb/updater/netset.sh ]
-	 then
-	 cp $pathusb/updater/netset.sh $whereami/netset.sh
-	 echo $(date) "$hostn: LAST OPERATION - UPDATER NETSET PATCH APPLIED" >>$pathusb/log.txt
-	 chmod +x $whereami/netset.sh
-	fi
-	if [ -e $pathusb/updater/watchusb.py ]
-	 then
-	 cp $pathusb/updater/watchusb.py $whereami/watchusb.py
-	 echo $(date) "$hostn: LAST OPERATION - WATCHUSB APP PATCH APPLIED" >>$pathusb/log.txt
-	 chmod +x $whereami/watchusb.py
-	fi	
-	echo $(date) "$hostn: LAST OPERATION - UPDATER PATCH APPLIED" >>$pathusb/log.txt
+    if [ -e $pathusb/updater/watchusb.service ]
+     then
+     cp $pathusb/updater/watchusb.service /lib/systemd/system/watchusb.service
+     echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
+    fi
+    if [ -e $pathusb/updater/watchwatchusb.service ]
+     then
+     cp $pathusb/updater/watchwatchusb.service /lib/systemd/system/watchwatchusb.service
+     echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHWATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
+    fi
+    if [ -e $pathusb/updater/netset.sh ]
+     then
+     cp $pathusb/updater/netset.sh $whereami/netset.sh
+     echo $(date) "$hostn: LAST OPERATION - UPDATER NETSET PATCH APPLIED" >>$pathusb/log.txt
+     chmod +x $whereami/netset.sh
+    fi
+    if [ -e $pathusb/updater/watchusb.py ]
+     then
+     cp $pathusb/updater/watchusb.py $whereami/watchusb.py
+     echo $(date) "$hostn: LAST OPERATION - WATCHUSB APP PATCH APPLIED" >>$pathusb/log.txt
+     chmod +x $whereami/watchusb.py
+    fi
+    echo $(date) "$hostn: LAST OPERATION - UPDATER PATCH APPLIED" >>$pathusb/log.txt
 fi
 
 # This section does a demo system router reconfig
 if  [ -f "$pathusb/demokit.config" ]
     then
     sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "$pathusb/demokit.config"
-	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
-	echo $(date) "$hostn: LAST OPERATION - DEMO ROUTER CONFIGURED" >>$pathusb/log.txt
+    sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
+    echo $(date) "$hostn: LAST OPERATION - DEMO ROUTER CONFIGURED" >>$pathusb/log.txt
 fi
 echo Unmounting...
 pumount usb
