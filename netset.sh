@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 pathusb=/media/usb # do not change, managed by Linux
 demoIP="10.0.242.1" # this is the LAN IP of the AAAPERIO router for updates to the WAN interface
 
