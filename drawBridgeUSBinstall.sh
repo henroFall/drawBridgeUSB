@@ -54,8 +54,16 @@ apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat
 check_exit_status
 pip3 install pyudev
 check_exit_status
-
+echo "Building UDEV override to automount USB drives..."
+echo "[Service]
+MountFlags=shared" > /etc/systemd/system/systemd-udevd.service.d/override.conf
+check_exit_status
+systemctl daemon-reload
+check_exit_status
+service systemd-udevd --full-restart
+check_exit_status
 cd $whereami
+check_exit_status
 #echo "Getting USBMount installer..."
 #wget -nv "$usbmountPullSpot" -O usbmount_0.0.24_all.deb
 #check_exit_status
