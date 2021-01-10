@@ -44,6 +44,7 @@ function whereami {
         fi
 }
 
+whereami
 echo Installing PCO Drawbridge Gateway USB Monitor...
 apt update
 check_exit_status
@@ -52,7 +53,6 @@ check_exit_status
 pip3 install pyudev
 check_exit_status
 
-whereami
 cd $whereami
 echo "Getting USBMount installer..."
 wget -nv "$usbmountPullSpot" -O usbmount_0.0.24_all.deb
