@@ -22,5 +22,9 @@ You will run the certmaker script on the application server as usual. You will t
 The USB updater service will look for any *.pco file on the root of the stick, extract the contents to the /Certificates area on the Drawbridge device and installs them. The entire process is automatic after you put the .pco file onto the USB stick.
 
 ## Full Software Update
-If a file named pco.patch exists on the root of the memory stick, the entire contents will be extracted and dumpped right on top of the /IoTGateway folder. This is actually super dangerous and probably should never be done. It seemed like a good idea at the time.
+If a file named pco.patch exists on the root of the memory stick, the entire contents will be extracted and dumpped right on top of the application folder. This is actually super dangerous and probably should never be done. It seemed like a good idea at the time.
  
+## Updater Software Update
+If a file named updater.patch exists on the root of the memory stick, the entire contents will be extracted to a subfolder and then each file in the updater package will be overwritten by a new file if it exists in the extracted folder. This also sounds dumb until the other side can validate the package.
+
+Which would be easy. I should do that.
