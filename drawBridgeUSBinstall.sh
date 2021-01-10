@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # usbWatch Installer
 
 usbmountPullSpot="http://www.personacampus.us/IoTGateway/usbmount_0.0.24_all.deb"
