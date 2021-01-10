@@ -188,8 +188,8 @@ fi
 # This section does a demo system router reconfig
 if  [ -f "$pathusb/demokit.config" ]
     then
-    sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP '$pathusb/demokit.config'
-	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP 'reboot'
+    sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "$pathusb/demokit.config"
+	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
 	echo $(date -u) "$hostn: LAST OPERATION - DEMO ROUTER CONFIGURED" >>$pathusb/log.txt
 fi
 echo Unmounting...
