@@ -59,19 +59,19 @@ function installCert() {
       sed -i "s/Test1234/$cer_pw/g" appsettings.json
       sed -i "s/TestClient/$cer_pw/g" appsettings.json
 	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
-      echo $(date -u) "LAST OPERATION - LOADED FIRST CERT" >>$pathusb/log.txt
+      echo $(date) "LAST OPERATION - LOADED FIRST CERT" >>$pathusb/log.txt
    else
       sed -i "s/$old_pw/$cer_pw/g" appsettings.json
 	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
-      echo $(date -u) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
+      echo $(date) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
    fi
 }
 
 ##############
 # Here we go #
 ##############
-echo $(date -u) "$hostn: -------------------------------" >>$pathusb/log.txt
-echo $(date -u) "$hostn: START OPERATION - USB DETECTED." >>$pathusb/log.txt
+echo $(date) "$hostn: -------------------------------" >>$pathusb/log.txt
+echo $(date) "$hostn: START OPERATION - USB DETECTED." >>$pathusb/log.txt
 # This section goes after the basic configuration
 hostn=$(getHostName)
 if  [ -f "$pathusb/config.yaml" ]
@@ -83,7 +83,7 @@ if  [ -f "$pathusb/config.yaml" ]
       rm -f /etc/netplan/iotgateway.yaml
       cp $whereami/iotgateway.yaml.last /etc/netplan/iotgateway.yaml
       echo "LAST OPERATION - RESET TO LAST KNOWN GOOD."
-      echo $(date -u) "$hostn: LAST OPERATION - RESET TO LAST KNOWN GOOD." >>$pathusb/log.txt
+      echo $(date) "$hostn: LAST OPERATION - RESET TO LAST KNOWN GOOD." >>$pathusb/log.txt
       netplan apply
       sleep 2
       shutdown now
@@ -111,15 +111,15 @@ if  [ -f "$pathusb/config.yaml" ]
                       addresses: [$ip_dns]
     version: 2" >/etc/netplan/iotgateway.yaml
 
-    echo $(date -u) "$hostn: LAST OPERATION - LOADED IP_ADDR: $ip_addr" >>$pathusb/log.txt
-    echo $(date -u) "$hostn: LAST OPERATION - LOADED IP_MASK: $ip_mask" >>$pathusb/log.txt
-    echo $(date -u) "$hostn: LAST OPERATION - WROTE IP_INFO : $ip_string" >>$pathusb/log.txt
-    echo $(date -u) "$hostn: LAST OPERATION - LOADED IP_GATE: $ip_gateway" >>$pathusb/log.txt
-    echo $(date -u) "$hostn: LAST OPERATION - LOADED IP_DNS : $ip_dns" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - LOADED IP_ADDR: $ip_addr" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - LOADED IP_MASK: $ip_mask" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - WROTE IP_INFO : $ip_string" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - LOADED IP_GATE: $ip_gateway" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - LOADED IP_DNS : $ip_dns" >>$pathusb/log.txt
     netplan apply
 else
     echo No Config file was found on the USB drive!
-    echo $(date -u) "$hostn: LAST OPERATION - CONFIG FILE NOT FOUND" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - CONFIG FILE NOT FOUND" >>$pathusb/log.txt
 fi
 
 # This section goes after the certs
@@ -137,11 +137,11 @@ if compgen -G "$pathusb/*.pco" > /dev/null
       sed -i "s/Test1234/$cer_pw/g" appsettings.json
       sed -i "s/TestClient/$cer_pw/g" appsettings.json
 	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
-      echo $(date -u) "$hostn: LAST OPERATION - LOADED FIRST CERT" >>$pathusb/log.txt
+      echo $(date) "$hostn: LAST OPERATION - LOADED FIRST CERT" >>$pathusb/log.txt
     else
       sed -i "s/$old_pw/$cer_pw/g" appsettings.json
 	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
-      echo $(date -u) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
+      echo $(date) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
     fi
 fi
 
@@ -153,7 +153,7 @@ if  [ -f "$pathusb/pco.patch" ]
     systemctl stop IoTGateway.service
     tar -C $whereami -xvf $pathusb/pco.tar.gz
     rm -f $pathusb/pco.tar
-    echo $(date -u) "$hostn: LAST OPERATION - PATCH APPLIED" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - PATCH APPLIED" >>$pathusb/log.txt
 fi
 
 # This section does an updater patch
@@ -166,26 +166,26 @@ if  [ -f "$pathusb/updater.patch" ]
 	if [ -e $pathusb/updater/watchusb.service ]
 	 then
 	 cp $pathusb/updater/watchusb.service /lib/systemd/system/watchusb.service
-	 echo $(date -u) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
+	 echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
 	fi
 	if [ -e $pathusb/updater/watchwatchusb.service ]
 	 then
 	 cp $pathusb/updater/watchwatchusb.service /lib/systemd/system/watchwatchusb.service
-	 echo $(date -u) "$hostn: LAST OPERATION - UPDATER WATCHWATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
+	 echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHWATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
 	fi
 	if [ -e $pathusb/updater/netset.sh ]
 	 then
 	 cp $pathusb/updater/netset.sh $whereami/netset.sh
-	 echo $(date -u) "$hostn: LAST OPERATION - UPDATER NETSET PATCH APPLIED" >>$pathusb/log.txt
+	 echo $(date) "$hostn: LAST OPERATION - UPDATER NETSET PATCH APPLIED" >>$pathusb/log.txt
 	 chmod +x $whereami/netset.sh
 	fi
 	if [ -e $pathusb/updater/watchusb.py ]
 	 then
 	 cp $pathusb/updater/watchusb.py $whereami/watchusb.py
-	 echo $(date -u) "$hostn: LAST OPERATION - WATCHUSB APP PATCH APPLIED" >>$pathusb/log.txt
+	 echo $(date) "$hostn: LAST OPERATION - WATCHUSB APP PATCH APPLIED" >>$pathusb/log.txt
 	 chmod +x $whereami/watchusb.py
 	fi	
-	echo $(date -u) "$hostn: LAST OPERATION - UPDATER PATCH APPLIED" >>$pathusb/log.txt
+	echo $(date) "$hostn: LAST OPERATION - UPDATER PATCH APPLIED" >>$pathusb/log.txt
 fi
 
 # This section does a demo system router reconfig
@@ -193,7 +193,7 @@ if  [ -f "$pathusb/demokit.config" ]
     then
     sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "$pathusb/demokit.config"
 	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
-	echo $(date -u) "$hostn: LAST OPERATION - DEMO ROUTER CONFIGURED" >>$pathusb/log.txt
+	echo $(date) "$hostn: LAST OPERATION - DEMO ROUTER CONFIGURED" >>$pathusb/log.txt
 fi
 echo Unmounting...
 pumount usb
