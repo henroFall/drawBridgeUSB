@@ -14,17 +14,17 @@ sleep 10
 
 function whereami {
         if [[ -d "/opt/amt/IoTGateway" ]]
-		 then
+         then
          whereami="/opt/amt/IoTGateway"
-		fi
-		if [[ -d "/usr/local/bin/IoTGateway" ]]
-		 then
+        fi
+        if [[ -d "/usr/local/bin/IoTGateway" ]]
+         then
          whereami="/usr/local/bin/IoTGateway"
-		fi
-		if [ -z "$whereami" ]
+        fi
+        if [ -z "$whereami" ]
                 then
                 echo $(date) "$hostn: LAST OPERATION - CAN NOT FIND PERSONA!" >>$pathusb/log.txt
-				exit 1
+                exit 1
         fi
 }
 
@@ -129,8 +129,8 @@ if  [ -f "$pathusb/config.yaml" ]
     echo $(date) "$hostn: LAST OPERATION - LOADED IP_ADDR: $ip_addr" >>$pathusb/log.txt
     echo $(date) "$hostn: LAST OPERATION - LOADED IP_MASK: $ip_mask" >>$pathusb/log.txt
     echo $(date) "$hostn: LAST OPERATION - WROTE IP_INFO : $ip_string" >>$pathusb/log.txt
-    echo $(date) "$hostn: LAST OPERATION - LOADED IP_GATE: $ip_gateway" >>$pathusb/log.txt
-    echo $(date) "$hostn: LAST OPERATION - LOADED IP_DNS : $ip_dns" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - WROTE IP_GATE: $ip_gateway" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - WROTE IP_DNS : $ip_dns" >>$pathusb/log.txt
     netplan apply
 else
     echo No Config file was found on the USB drive!
@@ -140,7 +140,7 @@ fi
 # This section goes after the certs
 if compgen -G "$pathusb/*.pco" > /dev/null
     then
-	echo $(date) "$hostn: LAST OPERATION - CERTTIFICATE FILES DETECTED" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - CERTTIFICATE FILES DETECTED" >>$pathusb/log.txt
     cd $whereami/Certificates/
     unzip -o -j $pathusb/*.pco
     cp rootCA.cer /usr/local/share/ca-certificates/rootCA.crt
@@ -164,7 +164,7 @@ fi
 # This section does a major patch
 if  [ -f "$pathusb/pco.patch" ]
     then
-	echo $(date) "$hostn: LAST OPERATION - DRAWBRIDGE PATCH DETECTED" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - DRAWBRIDGE PATCH DETECTED" >>$pathusb/log.txt
     mv $pathusb/pco.patch $pathusb/pco.tar.gz
     systemctl stop pco-service.service
     systemctl stop IoTGateway.service
@@ -176,32 +176,34 @@ fi
 # This section does an updater patch
 if  [ -f "$pathusb/updater.patch" ]
     then
-	echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH DETECTED" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH DETECTED" >>$pathusb/log.txt
     mkdir -p $pathusb/updater
     tar -C $pathusb/updater -xvf $pathusb/updater.patch
     if [ -e $pathusb/updater/watchusb.service ]
-     then
-     cp $pathusb/updater/watchusb.service /lib/systemd/system/watchusb.service
-     echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
+        then
+        cp $pathusb/updater/watchusb.service /lib/systemd/system/watchusb.service
+        echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
     fi
     if [ -e $pathusb/updater/watchwatchusb.service ]
-     then
-     cp $pathusb/updater/watchwatchusb.service /lib/systemd/system/watchwatchusb.service
-     echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHWATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
+        then
+        cp $pathusb/updater/watchwatchusb.service /lib/systemd/system/watchwatchusb.service
+        echo $(date) "$hostn: LAST OPERATION - UPDATER WATCHWATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
     fi
     if [ -e $pathusb/updater/netset.sh ]
-     then
-     cp $pathusb/updater/netset.sh $whereami/netset.sh
-     echo $(date) "$hostn: LAST OPERATION - UPDATER NETSET PATCH APPLIED" >>$pathusb/log.txt
-     chmod +x $whereami/netset.sh
+        then
+        mv $whereami/netset.sh $whereami/netset.sh.old
+        cp $pathusb/updater/netset.sh $whereami/netset.sh
+        rm $whereami/netset.sh.old
+        chmod +x $whereami/netset.sh
+        echo $(date) "$hostn: LAST OPERATION - UPDATER NETSET PATCH APPLIED" >>$pathusb/log.txt
     fi
     if [ -e $pathusb/updater/watchusb.py ]
-     then
-     cp $pathusb/updater/watchusb.py $whereami/watchusb.py
-     echo $(date) "$hostn: LAST OPERATION - WATCHUSB APP PATCH APPLIED" >>$pathusb/log.txt
-     chmod +x $whereami/watchusb.py
+        then
+        cp $pathusb/updater/watchusb.py $whereami/watchusb.py
+        echo $(date) "$hostn: LAST OPERATION - WATCHUSB APP PATCH APPLIED" >>$pathusb/log.txt
+        chmod +x $whereami/watchusb.py
     fi
-	rm -rf $pathusb/updater
+    rm -rf $pathusb/updater
     echo $(date) "$hostn: LAST OPERATION - UPDATER PATCH APPLIED" >>$pathusb/log.txt
 fi
 

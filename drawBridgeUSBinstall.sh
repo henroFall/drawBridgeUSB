@@ -32,17 +32,17 @@ check_exit_status() {
 function whereami {
         echo "Gateway usbWatch Installer: Searching for install location."
         if [[ -d "/opt/amt/IoTGateway" ]]
-		 then
+         then
          whereami="/opt/amt/IoTGateway"
-		fi
-		if [[ -d "/usr/local/bin/IoTGateway" ]]
-		 then
+        fi
+        if [[ -d "/usr/local/bin/IoTGateway" ]]
+         then
          whereami="/usr/local/bin/IoTGateway"
-		fi
-		if [ -z "$whereami" ]
+        fi
+        if [ -z "$whereami" ]
                 then
                 echo "PERSONA Gateway is NOT installed here. Exiting."
-				exit 1
+                exit 1
         fi
 }
 
@@ -95,7 +95,7 @@ def main():
     monitor.start()
 
     for device in iter(monitor.poll, None):
-        call('netset.sh')
+        subprocess.run(['/bin/bash', './netset.sh'])
 
 if __name__ == '__main__':
     main()" >$whereami/watchusb.py
@@ -124,7 +124,7 @@ WantedBy=multi-user.target" >$whereami/watchusb.service
 check_exit_status
 echo "Creating Service file 2/2..."
 echo "[Unit]
-Description=PERSONA USB Watcher Shutdown Watchdog 
+Description=PERSONA USB Watcher Shutdown Watchdog
 
 [Service]
 Type=simple
