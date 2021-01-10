@@ -52,10 +52,10 @@ check_exit_status
 whereami
 cd $whereami
 echo "Getting USBMount installer..."
-wget "$usbmountPullSpot" -O usbmount_0.0.24_all.deb
+wget -nv "$usbmountPullSpot" -O usbmount_0.0.24_all.deb
 check_exit_status
 echo "Pulling main script..."
-wget "$netsetPullSpot" -O netset.sh
+wget -nv "$netsetPullSpot" -O netset.sh
 check_exit_status
 chmod +x netset.sh
 check_exit_status
