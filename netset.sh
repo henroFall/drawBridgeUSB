@@ -2,6 +2,7 @@
 
 pathusb=/media/usb
 demoIP="10.0.242.1"
+
 sleep 10
 
 function whereami {
