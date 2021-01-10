@@ -30,6 +30,7 @@ check_exit_status() {
 }
 
 function whereami {
+        echo "Gateway usbWatch Installer: Searching for install location."
         if [[ -d "/opt/amt/IoTGateway" ]]
 		 then
          whereami="/opt/amt/IoTGateway"
