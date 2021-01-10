@@ -63,7 +63,7 @@ echo "Installing usbmount - ignore errors, APT will fix the dependencies right a
 dpkg -i usbmount_0.0.24_all.deb
 apt -y --fix-broken install
 check_exit_status
-echo "See? Told you. Now building the app file..."
+echo "Now building the app file..."
 echo "#!/usr/bin/env python
 
 import functools
@@ -99,7 +99,7 @@ chmod +x watchwatchusb.sh
 check_exit_status
 chmod +x $whereami/watchusb.py
 check_exit_status
-echo Creating Service file 1/2...
+echo "Creating Service file 1/2..."
 echo "[Unit]
 Description=PERSONA USB Watcher Service
 
@@ -113,7 +113,7 @@ Restart=no
 [Install]
 WantedBy=multi-user.target" >$whereami/watchusb.service
 check_exit_status
-echo Creating Service file 2/2...
+echo "Creating Service file 2/2..."
 echo "[Unit]
 Description=PERSONA USB Watcher Shutdown Watchdog 
 
