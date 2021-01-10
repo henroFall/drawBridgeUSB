@@ -1,5 +1,4 @@
 #!/bin/bash
-
 pathusb=/media/usb
 demoIP="10.0.242.1"
 sleep 10
