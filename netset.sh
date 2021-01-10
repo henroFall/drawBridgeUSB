@@ -69,7 +69,8 @@ function installCert() {
 ##############
 # Here we go #
 ##############
-
+echo $(date -u) "$hostn: -------------------------------" >>$pathusb/log.txt
+echo $(date -u) "$hostn: START OPERATION - USB DETECTED." >>$pathusb/log.txt
 # This section goes after the basic configuration
 hostn=$(getHostName)
 if  [ -f "$pathusb/config.yaml" ]
@@ -81,7 +82,7 @@ if  [ -f "$pathusb/config.yaml" ]
       rm -f /etc/netplan/iotgateway.yaml
       cp $whereami/iotgateway.yaml.last /etc/netplan/iotgateway.yaml
       echo "LAST OPERATION - RESET TO LAST KNOWN GOOD."
-      echo $(date -u) "$hostn: LAST OPERATION - RESET TO LAST KNOWN GOOD." >$pathusb/log.txt
+      echo $(date -u) "$hostn: LAST OPERATION - RESET TO LAST KNOWN GOOD." >>$pathusb/log.txt
       netplan apply
       sleep 2
       shutdown now
