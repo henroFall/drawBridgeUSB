@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # usbWatch Installer
-
 netsetPullSpot="https://raw.githubusercontent.com/henroFall/drawBridgeUSB/main/netset.sh"
 
 check_exit_status() {
