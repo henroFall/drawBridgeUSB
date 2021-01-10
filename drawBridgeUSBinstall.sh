@@ -29,11 +29,14 @@ check_exit_status() {
 }
 
 function whereami {
-        whereami=$(dirname $(find /usr/ -type f -name "IoTGateway.dll"))
-        if [ -z "$whereami" ]
-                then
-                whereami=$(dirname $(find /opt/ -type f -name "IoTGateway.dll"))
-        fi
+        if [[ -d "/opt/amt/IoTGateway" ]]
+		 then
+         whereami="/opt/amt/IoTGateway"
+		fi
+		if [[ -d "/usr/local/bin/IoTGateway" ]]
+		 then
+         whereami="/usr/local/bin/IoTGateway"
+		fi
 		if [ -z "$whereami" ]
                 then
                 echo "PERSONA Gateway is NOT installed here. Exiting."
