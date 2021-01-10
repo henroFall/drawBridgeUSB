@@ -2,7 +2,6 @@
 
 # usbWatch Installer
 
-usbmountPullSpot="http://www.personacampus.us/IoTGateway/usbmount_0.0.24_all.deb"
 netsetPullSpot="https://raw.githubusercontent.com/henroFall/drawBridgeUSB/main/netset.sh"
 
 check_exit_status() {
@@ -51,7 +50,7 @@ whereami
 echo Installing PCO Drawbridge Gateway USB Monitor...
 apt update
 check_exit_status
-apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat-utils usbmount
+apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat-utils pmount usbmount
 check_exit_status
 pip3 install pyudev
 check_exit_status

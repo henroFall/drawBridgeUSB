@@ -215,4 +215,5 @@ fi
 echo Unmounting...
 pumount usb
 sleep 2
+echo $(date) "$hostn: EXECUTING SHUTDOWN" >>$pathusb/log.txt
 shutdown now
