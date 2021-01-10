@@ -56,6 +56,7 @@ check_exit_status
 pip3 install pyudev
 check_exit_status
 echo "Building UDEV override to automount USB drives..."
+mkdir -p /etc/systemd/system/systemd-udevd.service.d
 echo "[Service]
 MountFlags=shared" > /etc/systemd/system/systemd-udevd.service.d/override.conf
 check_exit_status
@@ -65,16 +66,11 @@ service systemd-udevd --full-restart
 check_exit_status
 cd $whereami
 check_exit_status
-#echo "Getting USBMount installer..."
-#wget -nv "$usbmountPullSpot" -O usbmount_0.0.24_all.deb
-#check_exit_status
 echo "Pulling main script..."
 wget -nv "$netsetPullSpot" -O netset.sh
 check_exit_status
 chmod +x netset.sh
 check_exit_status
-#echo "Installing usbmount - ignore errors, APT will fix the dependencies right after."
-#dpkg -i usbmount_0.0.24_all.deb
 apt -y --fix-broken install
 check_exit_status
 echo "Now building the app file..."
