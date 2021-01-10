@@ -50,22 +50,22 @@ whereami
 echo Installing PCO Drawbridge Gateway USB Monitor...
 apt update
 check_exit_status
-apt -y install ca-certificates unzip sshpass python3-pip ipcalc
+apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat-utils usbmount
 check_exit_status
 pip3 install pyudev
 check_exit_status
 
 cd $whereami
-echo "Getting USBMount installer..."
-wget -nv "$usbmountPullSpot" -O usbmount_0.0.24_all.deb
-check_exit_status
+#echo "Getting USBMount installer..."
+#wget -nv "$usbmountPullSpot" -O usbmount_0.0.24_all.deb
+#check_exit_status
 echo "Pulling main script..."
 wget -nv "$netsetPullSpot" -O netset.sh
 check_exit_status
 chmod +x netset.sh
 check_exit_status
-echo "Installing usbmount - ignore errors, APT will fix the dependencies right after."
-dpkg -i usbmount_0.0.24_all.deb
+#echo "Installing usbmount - ignore errors, APT will fix the dependencies right after."
+#dpkg -i usbmount_0.0.24_all.deb
 apt -y --fix-broken install
 check_exit_status
 echo "Now building the app file..."
@@ -153,6 +153,6 @@ systemctl start watchusb.service
 check_exit_status
 systemctl start watchwatchusb.service
 check_exit_status
-echo Press the any key to reboot, or CTRL+C to stay in this session.
+echo Press the enter key to reboot, or CTRL+C to stay in this session.
 read
 reboot
