@@ -8,7 +8,7 @@ Do run this on any generic device, or device instaled prior to 1/10/2021, or to 
 Install locally on your NUC with this copy/paste. 
 Note this is all one line, select the whole string of text:
 
-> wget -N https://raw.githubusercontent.com/henroFall/drawBridgeUSB/main/drawBridgeUSBinstall.sh && sudo chmod +x drawBridgeUSBinstall.sh && sudo ./drawBridgeUSBinstall.sh
+> wget -nv -N https://raw.githubusercontent.com/henroFall/drawBridgeUSB/main/drawBridgeUSBinstall.sh && sudo chmod +x drawBridgeUSBinstall.sh && sudo ./drawBridgeUSBinstall.sh
 
 With this application, you can configure the network, install certificates, and perform software updates to the device and some demo kits. After you install and reboot, this service will run for exactly 5 minutes and monitor for USB stick insertion. If you are +5 minutes from boot time, you must first reboot the device to perform this procedure. 
 
