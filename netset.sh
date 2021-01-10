@@ -1,6 +1,7 @@
 #!/bin/bash
 
 pathusb=/media/usb
+demoIP="10.0.242.1"
 sleep 10
 
 function whereami {
@@ -68,6 +69,8 @@ function installCert() {
 ##############
 # Here we go #
 ##############
+
+# This section goes after the basic configuration
 hostn=$(getHostName)
 if  [ -f "$pathusb/config.yaml" ]
     then
@@ -117,6 +120,7 @@ else
     echo $(date -u) "$hostn: LAST OPERATION - CONFIG FILE NOT FOUND" >>$pathusb/log.txt
 fi
 
+# This section goes after the certs
 if compgen -G "$pathusb/*.pco" > /dev/null
     then
     cd $whereami/Certificates/
@@ -137,10 +141,9 @@ if compgen -G "$pathusb/*.pco" > /dev/null
 	  sed -i "s/client.pfx/ClientCert.pfx/g" appsettings.json
       echo $(date -u) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
     fi
-else
-    echo $(date -u) "$hostn: LAST OPERATION - NO CERT FILES TO PROCESS" >>$pathusb/log.txt
 fi
 
+# This section does a major patch
 if  [ -f "$pathusb/pco.patch" ]
     then
     mv $pathusb/pco.patch $pathusb/pco.tar.gz
@@ -149,8 +152,46 @@ if  [ -f "$pathusb/pco.patch" ]
     tar -C $whereami -xvf $pathusb/pco.tar.gz
     rm -f $pathusb/pco.tar
     echo $(date -u) "$hostn: LAST OPERATION - PATCH APPLIED" >>$pathusb/log.txt
-else
-    echo $(date -u) "$hostn: LAST OPERATION - NO PATCH AVAILABLE" >>$pathusb/log.txt
+fi
+
+# This section does an updater patch
+if  [ -f "$pathusb/updater.patch" ]
+    then
+    systemctl stop watchusb.service
+    systemctl stop watchwatchusb.service
+	mkdir $pathusb/updater
+    tar -C $pathusb/updater -xvf $pathusb/updater.patch
+	if [ -e $pathusb/updater/watchusb.service ]
+	 then
+	 cp $pathusb/updater/watchusb.service /lib/systemd/system/watchusb.service
+	 echo $(date -u) "$hostn: LAST OPERATION - UPDATER WATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
+	fi
+	if [ -e $pathusb/updater/watchwatchusb.service ]
+	 then
+	 cp $pathusb/updater/watchwatchusb.service /lib/systemd/system/watchwatchusb.service
+	 echo $(date -u) "$hostn: LAST OPERATION - UPDATER WATCHWATCHUSB.SERVICE PATCH APPLIED" >>$pathusb/log.txt
+	fi
+	if [ -e $pathusb/updater/netset.sh ]
+	 then
+	 cp $pathusb/updater/netset.sh $whereami/netset.sh
+	 echo $(date -u) "$hostn: LAST OPERATION - UPDATER NETSET PATCH APPLIED" >>$pathusb/log.txt
+	 chmod +x $whereami/netset.sh
+	fi
+	if [ -e $pathusb/updater/watchusb.py ]
+	 then
+	 cp $pathusb/updater/watchusb.py $whereami/watchusb.py
+	 echo $(date -u) "$hostn: LAST OPERATION - WATCHUSB APP PATCH APPLIED" >>$pathusb/log.txt
+	 chmod +x $whereami/watchusb.py
+	fi	
+	echo $(date -u) "$hostn: LAST OPERATION - UPDATER PATCH APPLIED" >>$pathusb/log.txt
+fi
+
+# This section does a demo system router reconfig
+if  [ -f "$pathusb/demokit.config" ]
+    then
+    sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP '$pathusb/demokit.config'
+	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP 'reboot'
+	echo $(date -u) "$hostn: LAST OPERATION - DEMO ROUTER CONFIGURED" >>$pathusb/log.txt
 fi
 echo Unmounting...
 pumount usb

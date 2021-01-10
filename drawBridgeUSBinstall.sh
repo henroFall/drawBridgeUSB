@@ -1,5 +1,8 @@
 #!/bin/bash
 # usbWatch Installer
+usbmountPullSpot="http://www.personacampus.us/IoTGateway/usbmount_0.0.24_all.deb"
+netsetPullSpot="https://raw.githubusercontent.com/henroFall/drawBridgeUSB/main/netset.sh"
+
 check_exit_status() {
     if [ $? -eq 0 ]
     then
@@ -31,30 +34,36 @@ function whereami {
                 then
                 whereami=$(dirname $(find /opt/ -type f -name "IoTGateway.dll"))
         fi
+		if [ -z "$whereami" ]
+                then
+                echo "PERSONA Gateway is NOT installed here. Exiting."
+				exit 1
+        fi
 }
 
 echo Installing PCO Drawbridge Gateway USB Monitor...
 apt update
 check_exit_status
-apt -y install ca-certificates unzip python3-pip ipcalc
+apt -y install ca-certificates unzip sshpass python3-pip ipcalc
 check_exit_status
 pip3 install pyudev
 check_exit_status
 
 whereami
 cd $whereami
-echo Getting USBMount installer...
-wget "http://www.personacampus.us/IoTGateway/usbmount_0.0.24_all.deb" -O usbmount_0.0.24_all.deb
+echo "Getting USBMount installer..."
+wget "$usbmountPullSpot" -O usbmount_0.0.24_all.deb
 check_exit_status
-wget https://raw.githubusercontent.com/henroFall/drawBridgeUSB/main/netset.sh -O netset.sh
+echo "Pulling main script..."
+wget "$netsetPullSpot" -O netset.sh
 check_exit_status
 chmod +x netset.sh
 check_exit_status
+echo "Installing usbmount - ignore errors, APT will fix the dependencies right after."
 dpkg -i usbmount_0.0.24_all.deb
 apt -y --fix-broken install
 check_exit_status
-
-echo "Building app file..."
+echo "See? Told you. Now building the app file..."
 echo "#!/usr/bin/env python
 
 import functools
@@ -141,4 +150,4 @@ systemctl start watchwatchusb.service
 check_exit_status
 echo Press the any key to reboot, or CTRL+C to stay in this session.
 read
-shutdown now
+reboot
