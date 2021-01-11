@@ -49,7 +49,7 @@ whereami
 echo Installing PCO Drawbridge Gateway USB Monitor...
 apt update
 check_exit_status
-apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat-utils pmount usbmount
+apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat-utils pmount usbmount dos2unix
 check_exit_status
 pip3 install pyudev
 check_exit_status
