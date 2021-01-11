@@ -213,7 +213,8 @@ if  [ -f "$pathusb/demokit.config" ]
     then
 	dos2unix "$pathusb/demokit.config"
 	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP <"$pathusb/demokit.config"
-    sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
+    sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "nvram commit"
+	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
     echo $(date) "$hostn: LAST OPERATION - DEMO ROUTER CONFIGURED" >>$pathusb/log.txt
 fi
 #This renames any .next file to remove the extension (so it can process on the next run)
