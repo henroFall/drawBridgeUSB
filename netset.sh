@@ -87,7 +87,7 @@ function installCert() {
 ##############
 hostn=$(getHostName)
 echo $(date) "$hostn: -------------------------------" >>$pathusb/log.txt
-echo $(date) "$hostn: START OPERATION - USB DETECTED." >>$pathusb/log.txt
+echo $(date) "$hostn: 1ST  OPERATION - USB DETECTED." >>$pathusb/log.txt
 # This section goes after the basic configuration
 if  [ -f "$pathusb/config.yaml" ]
     then

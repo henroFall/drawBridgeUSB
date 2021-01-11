@@ -26,6 +26,43 @@ check_exit_status() {
       fi
     fi
 }
+function getHostName {
+    cat /etc/hostname
+}
+
+function setHostName {
+#Assign existing hostname to $hostn
+hostn=$(getHostName)
+
+echo
+echo -e "\e[97mYou now have the opportunity to change the hostname of the Gateway."
+echo -e "\e[97mThe existing hostname is \e[44m$hostn\e[0m."
+echo
+echo -e "\e[97mEnter new hostname for this Gateway device, or press <ENTER> to leave it unchanged [$hostn]: \e[0m"
+read newhost
+if [ -z "$newhost" ]
+ then
+ newhost=$hostn
+ echo -e "The Gateway hostname was not changed. Hostname remains $newhost.\e[0m"
+ else
+ #change hostname in /etc/hosts & /etc/hostname
+ sed -i "s/$hostn/$newhost/g" /etc/hosts
+ sed -i "s/$hostn/$newhost/g" /etc/hostname
+ #display new hostname
+ echo -e "\e[97Your new hostname is $newhost, and will take effect on the next reboot.\e[0m"
+ echo
+fi
+check_exit_status
+check_debug $1
+}
+
+function setTimeZone {
+timedatectl set-timezone $(tzselect)
+echo
+echo "The Time Zone is:"
+timedatectl
+check_debug $1
+}
 
 function whereami {
         echo "Gateway usbWatch Installer: Searching for install location."
@@ -46,6 +83,11 @@ function whereami {
 
 whereami
 echo Installing PCO Drawbridge Gateway USB Monitor...
+if  [[ $1 != 'dovetail' ]]
+then
+ setHostName
+ setTimeZone
+fi
 apt update
 check_exit_status
 apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat-utils pmount usbmount dos2unix
@@ -155,6 +197,7 @@ systemctl start watchusb.service
 check_exit_status
 systemctl start watchwatchusb.service
 check_exit_status
+passwd amt
 echo Press the enter key to reboot, or CTRL+C to stay in this session.
 read
 reboot
