@@ -125,7 +125,7 @@ def main():
   time.sleep(5)
   if os.path.isfile('/media/usb/config.yaml'):
     subprocess.run(['/bin/bash', './netset.sh'])
-  else
+  else:
     timeout = 300   # [seconds]
     timeout_start = time.time()
     while time.time() < timeout_start + timeout:
