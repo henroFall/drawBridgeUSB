@@ -8,7 +8,7 @@ Do run this on any generic device, or device instaled prior to 1/10/2021, or to 
 Install locally on your NUC with this copy/paste. 
 Note this is all one line, select the whole string of text:
 
-> wget -nv -N https://raw.githubusercontent.com/henroFall/drawBridgeUSB/main/drawBridgeUSBinstall.sh && sudo chmod +x drawBridgeUSBinstall.sh && sudo ./drawBridgeUSBinstall.sh && rm drawBridgeUSBinstall.sh
+> wget -nv -N https://raw.githubusercontent.com/henroFall/drawBridgeUSB/main/drawBridgeUSBinstall.sh && sudo chmod +x drawBridgeUSBinstall.sh && sudo ./drawBridgeUSBinstall.sh && rm ./drawBridgeUSBinstall.sh
 
 With this application, you can configure the network, install certificates, and perform software updates to the device and some demo kits. After you install and reboot, this service will run for exactly 5 minutes and monitor for USB stick insertion. If you are +5 minutes from boot time, you must first reboot the device to perform this procedure. 
 
@@ -17,7 +17,9 @@ A log.txt is created on the memory stick.
 You can perform any of these actions on their own. You can place any one or all three of these files on the stick for the operations to occur. The script attempt to process each step in sequence.
 
 ## Network Update Feature
-Use the config.yaml file from this repo as a template and and copy it to the root of a USB stick. Edit the file with the obvious values that you want to configure the NUC with. Within 5 minutes of boot, simply insert the USB drive into the NUC. With this you can configure all parameters for the network interface of the NUC.
+Use the config.yaml file from this repo as a template and and copy it to the root of a USB stick. Edit the file with the obvious values that you want to configure the NUC with. Power the NUC down and then insert the USB drive into the NUC and turn it back on. Or, insert a USB stick within 5 minutes of boot. The USB ports are no longer monitored after 5 minutes.
+
+With this you can configure all parameters for the network interface of the NUC.
 
 ## Certificate Installer
 You will run the certmaker script on the application server as usual. You will then retrieve the _[word-of-the-day]-files.pco_ file from the server and copy it to the root of the memory stick.
