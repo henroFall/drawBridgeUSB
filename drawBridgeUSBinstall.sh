@@ -122,26 +122,30 @@ import subprocess
 import time
 
 def main():
-  timeout = 300   # [seconds]
-  timeout_start = time.time()
-  while time.time() < timeout_start + timeout:
-    BASE_PATH = os.path.abspath(os.path.dirname(__file__))
-    path = functools.partial(os.path.join, BASE_PATH)
-    call = lambda x, *args: subprocess.call([path(x)] + list(args))
+  time.sleep(5)
+  if os.path.isfile('/media/usb/config.yaml'):
+    subprocess.run(['/bin/bash', './netset.sh'])
+  else
+    timeout = 300   # [seconds]
+    timeout_start = time.time()
+    while time.time() < timeout_start + timeout:
+      BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+      path = functools.partial(os.path.join, BASE_PATH)
+      call = lambda x, *args: subprocess.call([path(x)] + list(args))
 
-    context = pyudev.Context()
-    monitor = pyudev.Monitor.from_netlink(context)
-    monitor.filter_by(subsystem='usb')
-    monitor.start()
+      context = pyudev.Context()
+      monitor = pyudev.Monitor.from_netlink(context)
+      monitor.filter_by(subsystem='usb')
+      monitor.start()
 
-    for device in iter(monitor.poll, None):
+      for device in iter(monitor.poll, None):
         subprocess.run(['/bin/bash', './netset.sh'])
 
 if __name__ == '__main__':
     main()" >$whereami/watchusb.py
 check_exit_status
 echo "#!/bin/bash
-sleep 300
+sleep 305
 sudo systemctl stop watchusb.service " >$whereami/watchwatchusb.sh
 check_exit_status
 chmod +x watchwatchusb.sh
@@ -150,7 +154,7 @@ chmod +x $whereami/watchusb.py
 check_exit_status
 echo "Creating Service file 1/2..."
 echo "[Unit]
-Description=PERSONA USB Watcher Service
+Description=drawBridge USB Watcher Service
 
 [Service]
 Type=simple
@@ -164,7 +168,7 @@ WantedBy=multi-user.target" >$whereami/watchusb.service
 check_exit_status
 echo "Creating Service file 2/2..."
 echo "[Unit]
-Description=PERSONA USB Watcher Shutdown Watchdog
+Description=drawBridge USB Watcher Shutdown Watchdog
 
 [Service]
 Type=simple

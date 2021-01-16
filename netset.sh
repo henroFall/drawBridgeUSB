@@ -92,7 +92,7 @@ echo $(date) "$hostn: 1ST  OPERATION - USB DETECTED." >>$pathusb/log.txt
 if  [ -f "$pathusb/config.yaml" ]
     then
     echo Config file found...
-	dos2unix $pathusb/config.yaml
+    dos2unix $pathusb/config.yaml
     whereami
     if [ "$ip_lastgood" = "sure" ]
     then
@@ -116,8 +116,8 @@ if  [ -f "$pathusb/config.yaml" ]
     rm -f $whereami/iotgateway.yaml.last
     cp /etc/netplan/iotgateway.yaml $whereami/iotgateway.yaml.last
     echo Building netplan...
-	if $ip_dhcp = 'false'
-	then
+    if $ip_dhcp = 'false'
+    then
     echo "network:
     ethernets:
         $nic:
@@ -128,21 +128,21 @@ if  [ -f "$pathusb/config.yaml" ]
             nameservers:
                       addresses: [$ip_dns]
     version: 2" >/etc/netplan/iotgateway.yaml
-	else
+    else
     echo "network:
     ethernets:
         $nic:
             dhcp4: $ip_dhcp
             addresses: []
     version: 2" >/etc/netplan/iotgateway.yaml
-	fi
+    fi
 
     echo $(date) "$hostn: LAST OPERATION - LOADED IP_ADDR: $ip_addr" >>$pathusb/log.txt
     echo $(date) "$hostn: LAST OPERATION - LOADED IP_MASK: $ip_mask" >>$pathusb/log.txt
     echo $(date) "$hostn: LAST OPERATION - WROTE IP_INFO : $ip_string" >>$pathusb/log.txt
     echo $(date) "$hostn: LAST OPERATION - WROTE IP_GATE: $ip_gateway" >>$pathusb/log.txt
     echo $(date) "$hostn: LAST OPERATION - WROTE IP_DNS : $ip_dns" >>$pathusb/log.txt
-	echo $(date) "$hostn: LAST OPERATION - WROTE DHCP : $ip_dhcp" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - WROTE DHCP : $ip_dhcp" >>$pathusb/log.txt
     netplan apply
 else
     echo No Config file was found on the USB drive!
@@ -208,7 +208,7 @@ if  [ -f "$pathusb/updater.patch" ]
         then
         mv $whereami/netset.sh $whereami/netset.sh.old
         cp $pathusb/updater/netset.sh $whereami/netset.sh.new
-		mv $whereami/netset.sh.new $whereami/netset.sh
+        mv $whereami/netset.sh.new $whereami/netset.sh
         rm $whereami/netset.sh.old
         chmod +x $whereami/netset.sh
         echo $(date) "$hostn: LAST OPERATION - UPDATER NETSET PATCH APPLIED" >>$pathusb/log.txt
@@ -228,10 +228,10 @@ fi # end of if-fi to skip over dangerous code
 # This section does a demo system router reconfig
 if  [ -f "$pathusb/demokit.config" ]
     then
-	dos2unix "$pathusb/demokit.config"
-	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP <"$pathusb/demokit.config"
+    dos2unix "$pathusb/demokit.config"
+    sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP <"$pathusb/demokit.config"
     sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "nvram commit"
-	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
+    sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
     echo $(date) "$hostn: LAST OPERATION - DEMO KIT CONFIG DETECTED & LOADED" >>$pathusb/log.txt
 fi
 #This renames any .next file to remove the extension (so it can process on the next run)
