@@ -91,6 +91,7 @@ echo $(date) "$hostn: 1ST  OPERATION - USB DETECTED." >>$pathusb/log.txt
 if  [ -f "$pathusb/config.yaml" ]
     then
     echo Config file found...
+	dos2unix $pathusb/config.yaml
     whereami
     if [ "$ip_lastgood" = "sure" ]
     then
@@ -114,6 +115,8 @@ if  [ -f "$pathusb/config.yaml" ]
     rm -f $whereami/iotgateway.yaml.last
     cp /etc/netplan/iotgateway.yaml $whereami/iotgateway.yaml.last
     echo Building netplan...
+	if $ip_dhcp = 'false'
+	then
     echo "network:
     ethernets:
         $nic:
@@ -124,6 +127,14 @@ if  [ -f "$pathusb/config.yaml" ]
             nameservers:
                       addresses: [$ip_dns]
     version: 2" >/etc/netplan/iotgateway.yaml
+	else
+    echo "network:
+    ethernets:
+        $nic:
+            dhcp4: $ip_dhcp
+            addresses: []
+    version: 2" >/etc/netplan/iotgateway.yaml
+	fi
 
     echo $(date) "$hostn: LAST OPERATION - LOADED IP_ADDR: $ip_addr" >>$pathusb/log.txt
     echo $(date) "$hostn: LAST OPERATION - LOADED IP_MASK: $ip_mask" >>$pathusb/log.txt
@@ -134,10 +145,10 @@ if  [ -f "$pathusb/config.yaml" ]
     netplan apply
 else
     echo No Config file was found on the USB drive!
-    echo $(date) "$hostn: LAST OPERATION - CONFIG FILE NOT FOUND" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - DRAWBRIDGE CONFIG FILE NOT PRESENT" >>$pathusb/log.txt
 fi
 
-# This section goes after the certs
+# This section does the certs
 if compgen -G "$pathusb/*.pco" > /dev/null
     then
     echo $(date) "$hostn: LAST OPERATION - CERTTIFICATE FILES DETECTED" >>$pathusb/log.txt
@@ -160,6 +171,9 @@ if compgen -G "$pathusb/*.pco" > /dev/null
       echo $(date) "$hostn: LAST OPERATION - TRIED TO LOAD A SUBSEQUENT CERT" >>$pathusb/log.txt
     fi
 fi
+
+#Dangerous code below, will not run in this safe version
+if [ 1 -eq 0 ]; then
 
 # This section does a major patch
 if  [ -f "$pathusb/pco.patch" ]
@@ -208,6 +222,8 @@ if  [ -f "$pathusb/updater.patch" ]
     echo $(date) "$hostn: LAST OPERATION - UPDATER PATCH APPLIED" >>$pathusb/log.txt
 fi
 
+fi # end of if-fi to skip over dangerous code
+
 # This section does a demo system router reconfig
 if  [ -f "$pathusb/demokit.config" ]
     then
@@ -215,7 +231,7 @@ if  [ -f "$pathusb/demokit.config" ]
 	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP <"$pathusb/demokit.config"
     sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "nvram commit"
 	sshpass -p "AAAPERIODEM0" ssh -o StrictHostKeyChecking=no root@$demoIP "reboot"
-    echo $(date) "$hostn: LAST OPERATION - DEMO ROUTER CONFIGURED" >>$pathusb/log.txt
+    echo $(date) "$hostn: LAST OPERATION - DEMO KIT CONFIG DETECTED & LOADED" >>$pathusb/log.txt
 fi
 #This renames any .next file to remove the extension (so it can process on the next run)
 cd $pathusb
