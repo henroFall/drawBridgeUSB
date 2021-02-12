@@ -84,6 +84,7 @@ function installCert() {
 ##############
 # Here we go #
 ##############
+typeset -l ip_dhcp
 hostn=$(getHostName)
 echo $(date) "$hostn: -------------------------------" >>$pathusb/log.txt
 echo $(date) "$hostn: 1ST  OPERATION - USB DETECTED." >>$pathusb/log.txt
