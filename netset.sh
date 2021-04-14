@@ -116,7 +116,7 @@ if  [ -f "$pathusb/config.yaml" ]
     rm -f $whereami/iotgateway.yaml.last
     cp /etc/netplan/iotgateway.yaml $whereami/iotgateway.yaml.last
     echo Building netplan...
-    if $ip_dhcp = 'false'
+    if [[ "$ip_dhcp" == 'false' ]]
     then
     echo "network:
     ethernets:
