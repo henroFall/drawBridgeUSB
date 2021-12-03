@@ -201,7 +201,11 @@ systemctl start watchusb.service
 check_exit_status
 systemctl start watchwatchusb.service
 check_exit_status
-passwd amt
+if id -u "amt" >/dev/null 2>&1; then
+    passwd amt
+else
+    echo 'AMT user missing, not setting password'
+fi
 echo Press the enter key to reboot, or CTRL+C to stay in this session.
 read
 reboot
