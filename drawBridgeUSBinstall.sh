@@ -14,7 +14,7 @@ check_exit_status() {
       echo
       if [[ $1 == '-a' ]]
       then
-        echo -e "\e[41m AUTO MODE IS ENABLED, EXITING.. \e[0m"
+        echo -e "\e[96m AUTO MODE IS ENABLED, EXITING.. \e[0m"
         echo
         exit 1
       else
@@ -82,7 +82,7 @@ function whereami {
 }
 
 whereami
-echo -e "\e[41mInstalling PCO Drawbridge Gateway USB Monitor...\e[0m"
+echo -e "\e[96mInstalling PCO Drawbridge Gateway USB Monitor...\e[0m"
 if  [[ $1 != 'dovetail' ]]
 then
  setHostName
@@ -94,7 +94,7 @@ apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat
 check_exit_status
 pip3 install pyudev
 check_exit_status
-echo -e "\e[41mBuilding UDEV override to automount USB drives...\e[0m"
+echo -e "\e[96mBuilding UDEV override to automount USB drives...\e[0m"
 mkdir -p /etc/systemd/system/systemd-udevd.service.d
 echo "[Service]
 MountFlags=shared" > /etc/systemd/system/systemd-udevd.service.d/override.conf
@@ -112,7 +112,7 @@ chmod +x netset.sh
 check_exit_status
 apt -y --fix-broken install
 check_exit_status
-echo -e "\e[41mNow building the app file...\e[0m"
+echo -e "\e[96mNow building the app file...\e[0m"
 echo "#!/usr/bin/env python
 
 import functools
@@ -152,7 +152,7 @@ chmod +x watchwatchusb.sh
 check_exit_status
 chmod +x $whereami/watchusb.py
 check_exit_status
-echo -e "\e[41mCreating Service file 1/2...\e[0m"
+echo -e "\e[96mCreating Service file 1/2...\e[0m"
 echo "[Unit]
 Description=drawBridge USB Watcher Service
 
@@ -166,7 +166,7 @@ Restart=no
 [Install]
 WantedBy=multi-user.target" >$whereami/watchusb.service
 check_exit_status
-echo -e "\e[41mCreating Service file 2/2...\e[0m"
+echo -e "\e[96mCreating Service file 2/2...\e[0m"
 echo "[Unit]
 Description=drawBridge USB Watcher Shutdown Watchdog
 
@@ -204,7 +204,7 @@ check_exit_status
 if id -u "amt" >/dev/null 2>&1; then
     passwd amt
 else
-    echo -e "\e[41mAMT user missing, not setting password\e[0m"
+    echo -e "\e[96mAMT user missing, not setting password\e[0m"
 fi
 cd $whereami
 rm appsettings.json.bak
