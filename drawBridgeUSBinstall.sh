@@ -82,7 +82,7 @@ function whereami {
 }
 
 whereami
-echo Installing PCO Drawbridge Gateway USB Monitor...
+echo -e "\e[41mInstalling PCO Drawbridge Gateway USB Monitor...\e[0m"
 if  [[ $1 != 'dovetail' ]]
 then
  setHostName
@@ -94,7 +94,7 @@ apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat
 check_exit_status
 pip3 install pyudev
 check_exit_status
-echo "Building UDEV override to automount USB drives..."
+echo -e "\e[41mBuilding UDEV override to automount USB drives...\e[0m"
 mkdir -p /etc/systemd/system/systemd-udevd.service.d
 echo "[Service]
 MountFlags=shared" > /etc/systemd/system/systemd-udevd.service.d/override.conf
@@ -112,7 +112,7 @@ chmod +x netset.sh
 check_exit_status
 apt -y --fix-broken install
 check_exit_status
-echo "Now building the app file..."
+echo -e "\e[41mNow building the app file...\e[0m"
 echo "#!/usr/bin/env python
 
 import functools
@@ -152,7 +152,7 @@ chmod +x watchwatchusb.sh
 check_exit_status
 chmod +x $whereami/watchusb.py
 check_exit_status
-echo "Creating Service file 1/2..."
+echo -e "\e[41mCreating Service file 1/2...\e[0m"
 echo "[Unit]
 Description=drawBridge USB Watcher Service
 
@@ -166,7 +166,7 @@ Restart=no
 [Install]
 WantedBy=multi-user.target" >$whereami/watchusb.service
 check_exit_status
-echo "Creating Service file 2/2..."
+echo -e "\e[41mCreating Service file 2/2...\e[0m"
 echo "[Unit]
 Description=drawBridge USB Watcher Shutdown Watchdog
 
@@ -204,8 +204,14 @@ check_exit_status
 if id -u "amt" >/dev/null 2>&1; then
     passwd amt
 else
-    echo 'AMT user missing, not setting password'
+    echo -e "\e[41mAMT user missing, not setting password\e[0m"
 fi
-echo Press the enter key to reboot, or CTRL+C to stay in this session.
-read
+cd $whereami
+rm appsettings.json.bak
+cp appsettings.json appsettings.json.bak
+apt -y autoremove
+echo -e "You should have completed the CertMaker on the server already."
+read -s -n 1 -p "Press any key to reboot this device. At that point, you are done."
+echo -e "Rebooting...\e[0m"
+reboot
 reboot
