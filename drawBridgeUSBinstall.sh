@@ -210,8 +210,9 @@ cd $whereami
 rm appsettings.json.bak
 cp appsettings.json appsettings.json.bak
 apt -y autoremove
+pip3 install six --upgrade
 echo -e "You should have completed the CertMaker on the server already."
 read -s -n 1 -p "Press any key to reboot this device. At that point, you are done."
 echo -e "Rebooting...\e[0m"
 reboot
-reboot
+
