@@ -90,7 +90,7 @@ then
 fi
 apt update
 check_exit_status
-apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat-utils pmount usbmount dos2unix
+apt -y install ca-certificates unzip sshpass python3-pip ipcalc exfat-fuse exfat-utils pmount usbmount dos2unix python-is-python3 python3-testresources
 check_exit_status
 pip3 install pyudev
 check_exit_status
